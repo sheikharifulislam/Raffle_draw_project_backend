@@ -1,5 +1,5 @@
 const notFoundHandler = (_req, _res, next) => {
-    let error = new Error("resource Not Found");
+    let error = new Error("Resource Not Found");
     error.status = 404;
     next(error);
 };
