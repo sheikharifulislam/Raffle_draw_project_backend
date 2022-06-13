@@ -5,20 +5,120 @@ class Datatbase {
         this.tickets = [];
     }
 
-    // create new ticket
-    create() {}
+    /**
+     * Create and save new ticket
+     * @param {string} userName
+     * @param {number} price
+     * @returns {Ticket} returns a new ticket object
+     */
+    create(userName, price) {
+        const ticket = new Ticket(userName, price);
+        this.tickets.push(ticket);
+        return ticket;
+    }
 
-    // return all tickets
-    find() {}
+    /**
+     * Create multiple ticket for a single user
+     * @param {string} userName
+     * @param {number} price
+     * @param {number} quantity
+     * @returns {Array<Ticket>}
+     */
+    bulkCreate(userName, price, quantity) {
+        const result = [];
+        for (let i = 0; i < quantity; i++) {
+            const ticket = this.create(userName, price);
+            result.push(ticket);
+        }
+        return result;
+    }
 
-    // find single ticket
-    findById() {}
+    /**
+     * return all available tickets
+     */
+    find() {
+        return this.tickets;
+    }
 
-    // update ticket
-    updateById() {}
+    /**
+     * find single ticket by userId
+     * @param {string} userId
+     * @returns {Ticket}
+     */
+    findById(ticketId) {
+        const ticket = this.tickets.find(
+            /**
+             * @param {Ticket} item
+             */
 
-    // delete ticket
-    delteById() {}
+            (item) => item.id === ticketId
+        );
+        return ticket;
+    }
+
+    /**
+     * find all tickets for a given user
+     * @param {string} userName
+     */
+    findByUserName(userName) {
+        return this.tickets.filter(
+            /**
+             * @param {Ticket} ticket
+             * @returns {Array<Ticket>}
+             */
+            (ticket) => ticket.userName === userName
+        );
+    }
+
+    /**
+     * update single ticket
+     * @param {string} ticketId
+     * @param {{userName: string, price: string}} ticketBody
+     * @returns {Ticket}
+     */
+    updateById(ticketId, ticketBody) {
+        const ticket = this.findById(ticketId);
+        ticket.userName = ticketBody.userName ?? ticketBody.userName;
+        ticket.price = ticketBody.price ?? ticketBody.price;
+        ticket.updateAt = new Date();
+        return ticket;
+    }
+
+    /**
+     * delete single ticket
+     * @param {string} ticketId
+     */
+    delteById(ticketId) {
+        const index = this.tickets.findIndex(
+            (ticket) => ticket.ticketId === ticketId
+        );
+        if (index !== -1) {
+            this.tickets.splice(index, 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * find winners
+     * @param {number} winnerCount
+     * @returns {Array<Ticket>}
+     */
+    draw(winnerCount) {
+        let winnerIndexes = new Array(winnerCount);
+        let index = 0;
+        while (index < winnerCount) {
+            let winnerIndex = Math.floor(Math.random() * this.tickets.length);
+            if (!winnerIndexes.includes(winnerIndex)) {
+                winnerIndexes[index++] = winnerIndex;
+                continue;
+            }
+        }
+
+        const winners = winnerIndexes.map((index) => this.tickets[index]);
+        return winners;
+    }
 }
 
 const myDatabase = new Datatbase();
