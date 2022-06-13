@@ -71,7 +71,7 @@ class Datatbase {
     }
 
     /**
-     * update single ticket
+     * update ticket by id
      * @param {string} ticketId
      * @param {{userName: string, price: string}} ticketBody
      * @returns {Ticket}
@@ -85,12 +85,42 @@ class Datatbase {
     }
 
     /**
-     * delete single ticket
+     * update ticket by user name
+     * @param {string} userName
+     * @param {{userName: string, price: string}} ticketBody
+     * @returns {Ticket}
+     */
+    updateByUserName(userName, ticketBody) {
+        const ticket = this.findByUserName(userName);
+        ticket.userName = ticketBody.userName ?? ticketBody.userName;
+        ticket.price = ticketBody.price ?? ticketBody.price;
+        ticket.updateAt = new Date();
+        return ticket;
+    }
+
+    /**
+     * delete ticket by ticket id
      * @param {string} ticketId
      */
     delteById(ticketId) {
         const index = this.tickets.findIndex(
             (ticket) => ticket.ticketId === ticketId
+        );
+        if (index !== -1) {
+            this.tickets.splice(index, 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * delete ticket by user name
+     * @param {string} userName
+     */
+    delteByUserName(userName) {
+        const index = this.tickets.findIndex(
+            (ticket) => ticket.userName === userName
         );
         if (index !== -1) {
             this.tickets.splice(index, 1);
