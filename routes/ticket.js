@@ -10,7 +10,8 @@ router
     })
     .patch((req, res) => {
         const { ticketId } = req.params;
-        const updatedTicket = db.updateById(ticketId, { ...req.body });
+        const { userName, price } = req.body;
+        const updatedTicket = db.updateById(ticketId, userName, price);
         res.status(200).json({
             message: "update Successfully",
             updatedTicket,
@@ -44,14 +45,16 @@ router
     });
 
 router.post("/sell", (req, res) => {
-    const ticket = db.create({ ...req.body });
+    const { userName, price } = req.body;
+    const ticket = db.create(userName, price);
     res.status(201).json({
         message: "Ticket Create Successfully",
         ticket,
     });
 });
 router.post("/bulk", (req, res) => {
-    const tickets = db.bulkCreate({ ...req.body });
+    const { userName, price, quantity } = req.body;
+    const tickets = db.bulkCreate(userName, price, quantity);
     res.status(201).json({
         message: "Bulk Create Successfully",
         tickets,
@@ -62,7 +65,7 @@ router.get("/draw", (req, res) => {
     const winners = db.draw(winnerCount);
     res.status(200).json(winners);
 });
-router.get("", (req, res) => {
+router.get("/", (_req, res) => {
     const tickets = db.find();
     res.status(200).json(tickets);
 });
